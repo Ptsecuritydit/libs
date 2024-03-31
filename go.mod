@@ -1,4 +1,4 @@
-module libs
+module github.com/Ptsecuritydit/libs
 
 go 1.22
 
