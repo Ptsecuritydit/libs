@@ -20,6 +20,7 @@ func NewMongoClient(conn string) *Context {
 		SetServerAPIOptions(serverAPI)
 
 	client, err := mongo.Connect(context.TODO(), clientOptions)
+
 	if err != nil {
 		log.Panic(err)
 	}
