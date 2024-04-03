@@ -10,7 +10,7 @@ import (
 )
 
 type MongoStore struct {
-	Session Context
+	Session *Context
 }
 
 func (receiver *MongoStore) GetUidPersonFromKey(key string, value string, dataBase string, tab string) (string, error) {
