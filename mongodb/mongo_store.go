@@ -38,9 +38,11 @@ func (receiver *MongoStore) InsertOrUpdateItem(personKey models.Person, dataBase
 	filter := bson.D{{"person_id", personKey.PersonId}}
 	update := bson.M{
 		"$set": bson.M{
-			"login_id": personKey.DomainId,
-			"email":    personKey.Email,
-			"telegram": personKey.Telegram,
+			"login_id":    personKey.DomainId,
+			"email":       personKey.Email,
+			"telegram":    personKey.Telegram,
+			"phone":       personKey.Phone,
+			"telegram_id": personKey.TelegramId,
 		},
 	}
 
