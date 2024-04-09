@@ -2,6 +2,7 @@ package db_models
 
 // Absence (LongAbsence) Отсутствия сотрудника/Длительные отсутствия сотрудника
 type Absence struct {
+	Id string `json:"id"`
 	//Идентификатор сотрудника
 	EmployeeId string `json:"employee_id"`
 	// Причина отсутствия: отпуск, болезнь или иные причины / Причина длительного отсутствия: декретный отпуск, иное

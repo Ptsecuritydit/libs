@@ -3,6 +3,7 @@ package mongodb
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/Ptsecuritydit/libs/mongodb/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -58,4 +59,23 @@ func (receiver *MongoStore) InsertOrUpdateItem(personKey models.Person, dataBase
 			log.Panic(err)
 		}
 	}
+}
+
+func (receiver *MongoStore) UpdateItem(key string, value string, dataBase string, tab string) error {
+	collection := receiver.Session.Client.Database(dataBase).Collection(tab)
+	filter := bson.D{{key, value}}
+	update := bson.M{
+		"$set": bson.M{
+			"telegram":    key,
+			"telegram_id": key,
+		},
+	}
+	updateResult, err := collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Panic(err)
+	}
+	if updateResult.MatchedCount == 0 {
+		return fmt.Errorf("key not found: %v", value)
+	}
+	return nil
 }
