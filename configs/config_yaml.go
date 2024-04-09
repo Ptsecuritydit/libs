@@ -10,6 +10,10 @@ import (
 
 var ServiceConfig AppConfig
 
+func init() {
+	MustLoadConfig()
+}
+
 type AppConfig struct {
 	RedisConfig    redisdb.Conf      `yaml:"redis"`
 	KafkaMq        KafkaConfig       `yaml:"kafka"`
