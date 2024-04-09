@@ -9,9 +9,10 @@ import (
 
 type Context struct {
 	Client *mongo.Client
+	cnx    context.Context
 }
 
-func NewMongoClient(conn string) *Context {
+func NewMongoClient(conn string, cnx context.Context) *Context {
 
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 
@@ -19,7 +20,13 @@ func NewMongoClient(conn string) *Context {
 		ApplyURI(conn).
 		SetServerAPIOptions(serverAPI)
 
-	client, err := mongo.Connect(context.TODO(), clientOptions)
+	client, err := mongo.Connect(cnx, clientOptions)
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	err = client.Ping(cnx, nil)
 
 	if err != nil {
 		log.Panic(err)

@@ -22,8 +22,10 @@ type Person struct {
 	DomainId string `json:"login_id"`
 	//Личная почта физического лица
 	Email string `json:"email"`
-	//Телефон Телеграм
-	Telegram string `json:"telegram"`
+	//Телефон
+	Phone string `json:"phone"`
+	//Телеграм
+	TelegramId string `json:"telegram_id"`
 	//Списов id Сотрудников
 	Employees []string `json:"employees"`
 }
