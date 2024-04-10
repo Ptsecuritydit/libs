@@ -37,8 +37,8 @@ func (receiver *Context) Set(key string, value string, ttl time.Duration) *redis
 	return receiver.client.Set(receiver.cnx, key, value, ttl)
 }
 
-func (receiver *Context) GetAllKeys() *redis.Cmd {
-	return receiver.client.Do(receiver.cnx, "KEYS", "*")
+func (receiver *Context) GetAllKeys(pattern string) *redis.Cmd {
+	return receiver.client.Do(receiver.cnx, "KEYS", pattern)
 }
 
 func (receiver *Context) Subscribe(pattern string) *redis.PubSub {
