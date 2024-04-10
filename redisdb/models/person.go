@@ -20,7 +20,7 @@ type Person struct {
 	PassId string `json:"pass_id"`
 	//LoginAD доменный идентификатор сотрудника
 	DomainId string `json:"login_id"`
-	//Личная почта физического лица
+	//почта физического лица
 	Email string `json:"email"`
 	//Телефон
 	Phone string `json:"phone"`
