@@ -17,13 +17,13 @@ type MongoPool struct {
 	poolSize    int
 }
 
-func (mp *MongoPool) getContextTimeOut() context.Context {
-	ctx, _ := context.WithTimeout(context.Background(), mp.timeout)
+func (mp *MongoPool) getContextTimeOut(cnx context.Context) context.Context {
+	ctx, _ := context.WithTimeout(cnx, mp.timeout)
 	return ctx
 }
 
-func (mp *MongoPool) createToChan() {
-	client, err := mongo.Connect(mp.getContextTimeOut(),
+func (mp *MongoPool) createToChan(cnx context.Context) {
+	client, err := mongo.Connect(mp.getContextTimeOut(cnx),
 		options.Client().ApplyURI(mp.uri).SetServerAPIOptions(options.ServerAPI(options.ServerAPIVersion1)))
 
 	if err != nil {
@@ -34,12 +34,12 @@ func (mp *MongoPool) createToChan() {
 	mp.connections++
 }
 
-func (mp *MongoPool) CloseConnection(conn *mongo.Client) error {
+func (mp *MongoPool) CloseConnection(cnx context.Context, conn *mongo.Client) error {
 	select {
 	case mp.pool <- conn:
 		return nil
 	default:
-		if err := conn.Disconnect(context.TODO()); err != nil {
+		if err := conn.Disconnect(cnx); err != nil {
 			log.Fatalf("Close the Pool failed，err=%v", err)
 			return err
 		}
@@ -48,11 +48,11 @@ func (mp *MongoPool) CloseConnection(conn *mongo.Client) error {
 	}
 }
 
-func (mp *MongoPool) GetConnection() (*mongo.Client, error) {
+func (mp *MongoPool) GetConnection(cnx context.Context) (*mongo.Client, error) {
 	for {
 		select {
 		case conn := <-mp.pool:
-			err := conn.Ping(mp.getContextTimeOut(), readpref.Primary())
+			err := conn.Ping(mp.getContextTimeOut(cnx), readpref.Primary())
 			if err != nil {
 				log.Fatalf("err=%v", err)
 				return nil, err
@@ -60,7 +60,7 @@ func (mp *MongoPool) GetConnection() (*mongo.Client, error) {
 			return conn, nil
 		default:
 			if mp.connections < mp.poolSize {
-				mp.createToChan()
+				mp.createToChan(cnx)
 			}
 		}
 	}
