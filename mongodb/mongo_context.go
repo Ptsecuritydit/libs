@@ -7,12 +7,11 @@ import (
 	"log"
 )
 
-type Context struct {
+type MongoConn struct {
 	Client *mongo.Client
-	cnx    context.Context
 }
 
-func NewMongoClient(conn string, cnx context.Context) *Context {
+func NewMongoClient(cnx context.Context, conn string) *MongoConn {
 
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 
@@ -32,5 +31,9 @@ func NewMongoClient(conn string, cnx context.Context) *Context {
 		log.Panic(err)
 	}
 
-	return &Context{Client: client}
+	return &MongoConn{Client: client}
+}
+
+func (c *MongoConn) GetCollection(db string, collectionName string) *mongo.Collection {
+	return c.Client.Database(db).Collection(collectionName)
 }
