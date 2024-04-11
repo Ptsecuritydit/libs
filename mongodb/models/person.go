@@ -7,10 +7,12 @@ type Person struct {
 	DomainId string `bson:"login_id"`
 	//электронная почта
 	Email string `bson:"email"`
-	//телефон в 1С
+	//Телефон в 1С
 	Phone string `bson:"phone"`
 	//ТелеграмЛогин @ivanov
 	Telegram string `bson:"telegram"`
 	//Телеграм Ид
 	TelegramId string `bson:"telegram_id"`
+	//Код ключа
+	PassId string `bson:"pass_id"`
 }
