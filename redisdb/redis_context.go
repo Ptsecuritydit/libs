@@ -13,46 +13,48 @@ type Conf struct {
 	DefaultDb int    `yaml:"defaultDb" env-default:"0"`
 }
 
-type Context struct {
+type RedisContext struct {
 	client *redis.Client
-	cnx    context.Context
 }
 
-func NewRedisContext(conf Conf, cnx context.Context) *Context {
-	return &Context{
+func NewRedisContext(conf Conf) *RedisContext {
+	return &RedisContext{
 		client: redis.NewClient(&redis.Options{
 			Addr:     conf.Address,
 			Password: conf.Password,
 			DB:       conf.DefaultDb,
 		}),
-		cnx: cnx,
 	}
 }
 
-func (receiver *Context) Get(key string) *redis.StringCmd {
-	return receiver.client.Get(receiver.cnx, key)
+func (r *RedisContext) Get(cnx context.Context, key string) *redis.StringCmd {
+	return r.client.Get(cnx, key)
 }
 
-func (receiver *Context) Set(key string, value string, ttl time.Duration) *redis.StatusCmd {
-	return receiver.client.Set(receiver.cnx, key, value, ttl)
+func (r *RedisContext) Set(cnx context.Context, key string, value string, ttl time.Duration) *redis.StatusCmd {
+	return r.client.Set(cnx, key, value, ttl)
 }
 
-func (receiver *Context) GetAllKeys(pattern string) *redis.Cmd {
-	return receiver.client.Do(receiver.cnx, "KEYS", pattern)
+func (r *RedisContext) GetAllKeys(cnx context.Context, pattern string) *redis.Cmd {
+	return r.client.Do(cnx, "KEYS", pattern)
 }
 
-func (receiver *Context) Subscribe(pattern string) *redis.PubSub {
-	return receiver.client.PSubscribe(receiver.cnx, pattern)
+func (r *RedisContext) Subscribe(cnx context.Context, pattern string) *redis.PubSub {
+	return r.client.PSubscribe(cnx, pattern)
 }
 
-func (receiver *Context) SetNotifyKeySpaceEvents() {
+func (r *RedisContext) Do(cnx context.Context, cmd string, args ...interface{}) *redis.Cmd {
+	return r.client.Do(cnx, cmd, args)
+}
+
+func (r *RedisContext) SetNotifyKeySpaceEvents(cnx context.Context) {
 	value := `notify-keyspace-events`
-	result := receiver.client.ConfigGet(receiver.cnx, value)
+	result := r.client.ConfigGet(cnx, value)
 	if result.Err() != nil {
 		log.Panic("redis config get failed", result.Err())
 	}
 	if result.Val()[value] == "" {
-		result := receiver.client.ConfigSet(receiver.cnx, value, "KEA")
+		result := r.client.ConfigSet(cnx, value, "KEA")
 		if result.Err() != nil {
 			log.Panic("redis config set failed", result.Err())
 		}
