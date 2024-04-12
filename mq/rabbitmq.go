@@ -1,10 +1,19 @@
 package mq
 
-import "github.com/streadway/amqp"
+import (
+	"github.com/streadway/amqp"
+	"log"
+)
 
 type RabbitMQ struct {
 	conn *amqp.Connection
 	ch   *amqp.Channel
+}
+
+func FailOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s:%s\n", msg, err)
+	}
 }
 
 func NewRabbitMQ(uri string) (*RabbitMQ, error) {
@@ -19,15 +28,19 @@ func NewRabbitMQ(uri string) (*RabbitMQ, error) {
 	return &RabbitMQ{conn, ch}, nil
 }
 
-func (r *RabbitMQ) Close() {
-	r.conn.Close()
+func (r *RabbitMQ) Close() error {
+	return r.conn.Close()
 }
 
-func (r *RabbitMQ) RabbitQueueDeclare(qname string, durable bool, autoDelete bool, exclusive bool, noWait bool, args amqp.Table) error {
+func (r *RabbitMQ) RabbitQueueDeclare(qname string, durable, autoDelete, exclusive, noWait bool, args amqp.Table) error {
 	_, err := r.ch.QueueDeclare(qname, durable, autoDelete, exclusive, noWait, args)
 	return err
 }
 
 func (r *RabbitMQ) ChannelPublish(exchange string, key string, mandatory, immediate bool, msg amqp.Publishing) error {
 	return r.ch.Publish(exchange, key, mandatory, immediate, msg)
+}
+
+func (r *RabbitMQ) RabbitConsume(exchange string, key string, autoAck, exclusive, noLocal, noWait bool, args amqp.Table) (<-chan amqp.Delivery, error) {
+	return r.ch.Consume(exchange, key, false, false, false, false, args)
 }

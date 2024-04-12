@@ -42,6 +42,10 @@ type MongoConfig struct {
 	Collection       string `yaml:"collection" env-default:"test"`
 }
 
+type RabbitConfig struct {
+	ConnectionString string `yaml:"connectionString" env-default:"amqp://localhost:5672/"`
+}
+
 func MustLoadConfig() {
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {
