@@ -37,3 +37,7 @@ func NewMongoClient(cnx context.Context, conn string) *MongoConn {
 func (c *MongoConn) GetCollection(db string, collectionName string) *mongo.Collection {
 	return c.Client.Database(db).Collection(collectionName)
 }
+
+func (c *MongoConn) Disconnect(ctx context.Context) error {
+	return c.Client.Disconnect(ctx)
+}
