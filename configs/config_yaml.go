@@ -22,6 +22,7 @@ type AppConfig struct {
 	MongoConfig    `yaml:"mongodb"`
 	UseKafka       bool `yaml:"useKafka"`
 	HttpServer     `yaml:"http"`
+	HttpClients    map[string]string `yaml:"httpClients"`
 }
 
 type KafkaConfig struct {
