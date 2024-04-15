@@ -23,7 +23,7 @@ type AppConfig struct {
 	UseKafka       bool `yaml:"useKafka"`
 	HttpServer     `yaml:"http"`
 	HttpClients    map[string]string `yaml:"httpClients"`
-	RabbitConfig   `yaml:"rabbit"`
+	RabbitMq       RabbitConfig      `yaml:"rabbit"`
 }
 
 type KafkaConfig struct {
@@ -45,8 +45,8 @@ type MongoConfig struct {
 }
 
 type RabbitConfig struct {
-	ConnectionString string `yaml:"connectionString" env-default:"amqp://localhost:5672/"`
-	QueuePrefix      string `yaml:"queuePrefix" env-default:"data_service"`
+	ConnectionString string `yaml:"connectionString"`
+	QueuePrefix      string `yaml:"queuePrefix"`
 }
 
 func MustLoadConfig() {
