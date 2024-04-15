@@ -46,7 +46,7 @@ type MongoConfig struct {
 
 type RabbitConfig struct {
 	ConnectionString string `yaml:"connectionString" env-default:"amqp://localhost:5672/"`
-	QueuePrefix      string `json:"queuePrefix" env-default:"data_service"`
+	QueuePrefix      string `yaml:"queuePrefix" env-default:"data_service"`
 }
 
 func MustLoadConfig() {
