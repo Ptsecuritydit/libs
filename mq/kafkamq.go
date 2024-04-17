@@ -25,10 +25,8 @@ func configure(config configs.KafkaConfig) *kafka.ConfigMap {
 
 	kafkaConfig := kafka.ConfigMap{}
 
-	for _, element := range config.Config {
-		for key, value := range element {
-			_ = kafkaConfig.SetKey(key, value)
-		}
+	for key, value := range config.Config {
+		_ = kafkaConfig.SetKey(key, value)
 	}
 	return &kafkaConfig
 }
