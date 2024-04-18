@@ -8,6 +8,7 @@ import (
 
 type KafkaMq struct {
 	Producer *kafka.Producer
+	consumer *kafka.Consumer
 }
 
 func NewKafkaProducer(kafkaConf configs.KafkaConfig) KafkaMq {
@@ -31,7 +32,9 @@ func configure(config configs.KafkaConfig) *kafka.ConfigMap {
 	return &kafkaConfig
 }
 
-func (kafkaMq KafkaMq) SendMassages(message kafka.Message) {
+// SendMassages sync
+// send kafka message to internal queue. waiting
+func (kafkaMq *KafkaMq) SendMassages(message kafka.Message) {
 
 	delChan := make(chan kafka.Event)
 
@@ -48,4 +51,25 @@ func (kafkaMq KafkaMq) SendMassages(message kafka.Message) {
 	}
 
 	close(delChan)
+}
+
+// SendMassageAsync
+// send kafka message to internal queue.
+// We are expecting delivery
+func (kafkaMq *KafkaMq) SendMassageAsync(message kafka.Message) {
+	err := kafkaMq.Producer.Produce(&message, nil)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	go func() {
+		for e := range kafkaMq.Producer.Events() {
+			switch msg := e.(type) {
+			case *kafka.Message:
+				if msg.TopicPartition.Error != nil {
+					log.Println(msg.TopicPartition.Error.Error())
+				}
+			}
+		}
+	}()
 }

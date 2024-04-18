@@ -29,7 +29,7 @@ type AppConfig struct {
 type KafkaConfig struct {
 	Config             map[string]string `yaml:"config"`
 	AdditionalSettings string            `yaml:"additionalSettings"`
-	Topics             []string          `yaml:"topics"`
+	Topics             map[string]string `yaml:"topics"`
 }
 
 type HttpServer struct {
