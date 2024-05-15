@@ -19,7 +19,7 @@ type Person struct {
 	//номер карты сотрудника
 	PassId string `json:"pass_id"`
 	//LoginAD доменный идентификатор сотрудника
-	DomainId string `json:"login_id"`
+	DomainId string `json:"login_ad"`
 	//почта физического лица
 	Email string `json:"email"`
 	//Телефон
