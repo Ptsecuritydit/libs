@@ -41,8 +41,8 @@ func (r *RabbitMQ) ChannelPublish(exchange string, key string, mandatory, immedi
 	return r.ch.Publish(exchange, key, mandatory, immediate, msg)
 }
 
-func (r *RabbitMQ) RabbitConsume(exchange string, key string, autoAck, exclusive, noLocal, noWait bool, args amqp.Table) (<-chan amqp.Delivery, error) {
-	return r.ch.Consume(exchange, key, autoAck, exclusive, noLocal, noWait, args)
+func (r *RabbitMQ) RabbitConsume(queue string, consumer string, autoAck, exclusive, noLocal, noWait bool, args amqp.Table) (<-chan amqp.Delivery, error) {
+	return r.ch.Consume(queue, consumer, autoAck, exclusive, noLocal, noWait, args)
 }
 
 func (r *RabbitMQ) RabbitExchangeDeclare(name, kind string, durable, autoDelete, internal, noWait bool, args amqp.Table) error {
