@@ -3,7 +3,7 @@ package models
 type Person struct {
 	//Идентификатор сотрудника
 	PersonId string `bson:"person_id"`
-	//ЛогиеИд в домене `mivanov`
+	//ЛогинИд в домене `mivanov`
 	DomainId string `bson:"login_id"`
 	//электронная почта
 	Email string `bson:"email"`
@@ -15,4 +15,6 @@ type Person struct {
 	TelegramId string `bson:"telegram_id"`
 	//Код ключа
 	PassId string `bson:"pass_id"`
+	//Код MidPoint
+	MidPointId string `bson:"mid_point_id"`
 }
